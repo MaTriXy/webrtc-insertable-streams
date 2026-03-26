@@ -48,12 +48,20 @@ spec:webidl; type:dfn; text:resolve
     "href": "https://datatracker.ietf.org/doc/draft-ietf-avtcore-abs-capture-time/",
     "title": "RTP Header Extension for Absolute Capture Time",
     "publisher": "IETF"
+   },
+   "RTP-SFRAME-PAYLOAD": {
+    "href": "https://datatracker.ietf.org/doc/draft-ietf-avtcore-rtp-sframe/",
+    "title": "RTP Payload Format for SFrame",
+    "publisher": "IETF"
    }
 }
 </pre>
 <pre class=link-defaults>
 spec:streams; type:interface; text:ReadableStream
 spec:infra; type:dfn; text:list
+</pre>
+<pre class=anchors>
+url: https://w3c.github.io/webrtc-pc/#dfn-check-if-negotiation-is-needed; text: check the negotiation-needed flag; type: dfn; spec: WEBRTC
 </pre>
 
 # Introduction # {#introduction}
@@ -118,6 +126,18 @@ on it and pass the result to the associated [=decoder=] in place of
 the original frame.
 
 ## Extension operation ## {#operation}
+
+At construction of each {{RTCRtpTransceiver}}, run the following steps:
+1. Initialize [=this=].`[[useSFrame]]` to undefined.
+1. If [=this=] is associated with a media description, initialize [=this=].`[[useSFrame]]` from the media description. If [=this=].`[[useSFrame]]` is true, enable SFrame RTP packetization for [=this=].
+1. Otherwise, [=queue a task=] to run the following steps:
+    1. If [=this=].`[[useSFrame]]` is undefined, set [=this=].`[[useSFrame]]` to false.
+
+<p class=note>
+{{RTCRtpTransceiver}}.`[[useSFrame]]` should be set either synchronously, in case it is already tied to a SDP m-section, or asynchronously, before it is associated to a SDP m-section.
+This ensures that {{RTCRtpTransceiver}}.`[[useSFrame]]` and the corresponding SDP are always synchronized.
+By doing so, the handling related to the negotiation-needed flag, like the [=check the negotiation-needed flag=] algorithm, does not need to take into account {{RTCRtpTransceiver}}.`[[useSFrame]]`.
+</p>
 
 At construction of each {{RTCRtpSender}} or {{RTCRtpReceiver}}, run the following steps:
 1. Initialize [=this=].`[[transform]]` to null.
@@ -188,6 +208,15 @@ and a <dfn abstract-op for=RTCRtpTransform>disassociation algorithm</dfn>, both 
 The <dfn attribute for="RTCRtpSender,RTCRtpReceiver">transform</dfn> getter steps are to
 return [=this=].`[[transform]]`. The setter steps are:
 1. Let |transform| be the argument to the setter.
+1. Let |transceiver| be the {{RTCRtpTransceiver}} associated to [=this=].
+1. If |transform|.`[[useSFrame]]` is true, run the following steps:
+    1. If |transceiver|.`[[useSFrame]]` is false, throw a {{InvalidModificationError}} and abort these steps.
+    1. Otherwise, if |transceiver|.`[[useSFrame]]` is undefined, run the following steps:
+        1. Set |transceiver|.`[[useSFrame]]` to true.
+        1. Enable SFrame RTP packetization for |transceiver|.
+1. Otherwise, run the following steps:
+    1. If |transceiver|.`[[useSFrame]]` is true, throw a {{InvalidModificationError}} and abort these steps.
+    1. Set |transceiver|.`[[useSFrame]]` to false.
 1. If |transform| is not null and |transform|.`[[owner]]` is not null, throw a {{InvalidStateError}} and abort these steps.
 1. Set |transform|.`[[owner]]` to [=this=].
 1. Let |oldTransform| be [=this=].`[[transform]]`.
@@ -289,11 +318,13 @@ The <dfn constructor for="RTCSFrameSenderTransform" lt="RTCSFrameSenderTransform
 1. Let |options| be the method's first argument.
 1. Run the [=SFrame initialization algorithm=] with |this| and |options|.
 1. Set |this|.`[[role]]` to 'encrypt'.
+1. Set |this|.`[[useSFrame]]` to true.
 
 The <dfn constructor for="RTCSFrameReceiverTransform" lt="RTCSFrameReceiverTransform(options)"><code>new RTCSFrameReceiverTransform(<var>options</var>)</code></dfn> constructor steps are:
 1. Let |options| be the method's first argument.
 1. Run the [=SFrame initialization algorithm=] with |this| and |options|.
 1. Set |this|.`[[role]]` to 'decrypt'.
+1. Set |this|.`[[useSFrame]]` to true.
 
 The <dfn constructor for="SFrameEncrypterStream" lt="SFrameEncrypterStream(options)"><code>new SFrameEncrypterStream(<var>options</var>)</code></dfn> constructor steps are:
 1. Let |options| be the method's first argument.
