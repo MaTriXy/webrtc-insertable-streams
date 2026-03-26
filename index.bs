@@ -135,7 +135,7 @@ At construction of each {{RTCRtpTransceiver}}, run the following steps:
 <p class=note>
 {{RTCRtpTransceiver}}.`[[useSFrame]]` should be set either synchronously, in case it is already tied to a SDP m-section, or asynchronously, before it is associated to a SDP m-section.
 This ensures that {{RTCRtpTransceiver}}.`[[useSFrame]]` and the corresponding SDP are always synchronized.
-By doing so, the handling related to the negotiation-needed flag, like the [=check the negotiation-needed flag=] algorithm, do not need to take into account {{RTCRtpTransceiver}}.`[[useSFrame]]`.
+By doing so, the handling related to the negotiation-needed flag, like the [=check the negotiation-needed flag=] algorithm, does not need to take into account {{RTCRtpTransceiver}}.`[[useSFrame]]`.
 </p>
 
 At construction of each {{RTCRtpSender}} or {{RTCRtpReceiver}}, run the following steps:
