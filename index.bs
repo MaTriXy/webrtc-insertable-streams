@@ -953,7 +953,8 @@ An {{RTCRtpScriptTransform}} object has the following internal slot:
 ## Constructor ## {#RTCRtpScriptTransform-constructor}
 
 The <dfn constructor for="RTCRtpScriptTransform" lt="RTCRtpScriptTransform(workerAndOptionalParameters, options, transfer)"><code>new RTCRtpScriptTransform(|workerAndOptionalParameters|, |options|, |transfer|)</code></dfn> constructor steps are:
-1. Let |worker| and |useSFrame|.
+1. Let |worker| be undefined.
+1. Let |useSFrame| be undefined.
 1. If |workerAndOptionalParameters| is a {{Worker}} object, set |worker| to |workerAndOptionalParameters| and |useSFrame| to false.
 1. Otherwise, run the following substeps:
     1. Set |worker| to |workerAndOptionalParameters|["worker"].
