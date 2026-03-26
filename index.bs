@@ -927,7 +927,7 @@ typedef (Worker or WorkerAndParameters) WorkerOrWorkerAndParameters;
 
 [Exposed=Window]
 interface RTCRtpScriptTransform {
-    constructor(WorkerAndOptionalParameters workerAndOptionalParameters, optional any options, optional sequence&lt;object&gt; transfer);
+    constructor(WorkerOrWorkerAndParameters workerOrWorkerAndParameters, optional any options, optional sequence&lt;object&gt; transfer);
 };
 </pre>
 
