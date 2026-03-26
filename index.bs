@@ -958,7 +958,7 @@ The <dfn constructor for="RTCRtpScriptTransform" lt="RTCRtpScriptTransform(worke
 1. If |workerOrWorkerAndParameters| is a {{Worker}} object, set |worker| to |workerOrWorkerAndParameters| and |useSFrame| to false.
 1. Otherwise, run the following substeps:
     1. Set |worker| to |workerOrWorkerAndParameters|["worker"].
-    1. Set |useSFrame| to true if |workerAndOptionalParameters|["type"] is "sframe" and false otherwise.
+    1. Set |useSFrame| to true if |workerOrWorkerAndParameters|["type"] is "sframe" and false otherwise.
 1. Initialize [=this=]'s internal slot as follows:
     : {{RTCRtpScriptTransform/[[worker]]}}
     :: |worker|
