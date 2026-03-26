@@ -128,6 +128,7 @@ the original frame.
 ## Extension operation ## {#operation}
 
 At construction of each {{RTCRtpTransceiver}}, run the following steps:
+1. Initialize [=this=].`[[useSFrame]]` to undefined.
 1. If [=this=] is associated with a media description, initialize [=this=].`[[useSFrame]]` from the media description. If [=this=].`[[useSFrame]]` is true, enable SFrame RTP packetization for [=this=].
 1. Otherwise, [=queue a task=] to run the following steps:
     1. If [=this=].`[[useSFrame]]` is undefined, set [=this=].`[[useSFrame]]` to false.
