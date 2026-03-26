@@ -923,7 +923,7 @@ dictionary WorkerAndParameters {
      RTCRtpScriptTransformType type;
 };
 
-typedef (Worker or WorkerAndParameters) WorkerAndOptionalParameters;
+typedef (Worker or WorkerAndParameters) WorkerOrWorkerAndParameters;
 
 [Exposed=Window]
 interface RTCRtpScriptTransform {
