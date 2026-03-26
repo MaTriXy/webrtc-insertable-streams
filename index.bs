@@ -926,9 +926,20 @@ Their [=deserialization steps=], given |serialized|, |value| and |realm|, are:
 
 # <dfn interface>RTCRtpScriptTransform</dfn> interface # {#RTCRtpScriptTransform-interface}
 <pre class="idl">
+enum RTCRtpScriptTransformType {
+    "sframe"
+};
+
+dictionary WorkerAndParameters {
+     required Worker worker;
+     RTCRtpScriptTransformType type;
+};
+
+typedef (Worker or WorkerAndParameters) WorkerOrWorkerAndParameters;
+
 [Exposed=Window]
 interface RTCRtpScriptTransform {
-    constructor(Worker worker, optional any options, optional sequence&lt;object&gt; transfer);
+    constructor(WorkerOrWorkerAndParameters workerOrWorkerAndParameters, optional any options, optional sequence&lt;object&gt; transfer);
 };
 </pre>
 
@@ -953,10 +964,17 @@ An {{RTCRtpScriptTransform}} object has the following internal slot:
 
 ## Constructor ## {#RTCRtpScriptTransform-constructor}
 
-The <dfn constructor for="RTCRtpScriptTransform" lt="RTCRtpScriptTransform(worker, options)"><code>new RTCRtpScriptTransform(|worker|, |options|, |transfer|)</code></dfn> constructor steps are:
+The <dfn constructor for="RTCRtpScriptTransform" lt="RTCRtpScriptTransform(workerOrWorkerAndParameters, options, transfer)"><code>new RTCRtpScriptTransform(|workerOrWorkerAndParameters|, |options|, |transfer|)</code></dfn> constructor steps are:
+1. Let |worker| be undefined.
+1. Let |useSFrame| be undefined.
+1. If |workerOrWorkerAndParameters| is a {{Worker}} object, set |worker| to |workerOrWorkerAndParameters| and |useSFrame| to false.
+1. Otherwise, run the following substeps:
+    1. Set |worker| to |workerOrWorkerAndParameters|["worker"].
+    1. Set |useSFrame| to true if |workerOrWorkerAndParameters|["type"] is "sframe" and false otherwise.
 1. Initialize [=this=]'s internal slot as follows:
     : {{RTCRtpScriptTransform/[[worker]]}}
     :: |worker|
+1. Initialize [=this=].`[[useSFrame]]` to |useSFrame|.
 1. Let |serializedOptions| be the result of [$StructuredSerializeWithTransfer$](|options|, |transfer|).
 1. [=Queue a global task=] on the DOM manipulation [=task source=] with |worker|'s
     {{WorkerGlobalScope}} to run the following steps:
